@@ -1,0 +1,64 @@
+version: '3'
+services:
+  redis:
+    image: redis:7.0
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - application
+    restart: unless-stopped  # Thêm policy restart
+    command: redis-server --appendonly yes  # Thêm persistence
+    healthcheck: # Thêm healthcheck
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-insight:
+    image: redis/redisinsight:latest
+    ports:
+      - '5540:5540'
+    volumes:
+      - redisinsight-data:/db  # Thêm volume cho RedisInsight
+    depends_on:
+      - redis
+    networks:
+      - application
+    restart: unless-stopped  # Thêm policy restart
+    environment: # Thêm environment variables
+      - REDISINSIGHT_HOST=0.0.0.0
+      - REDISINSIGHT_PORT=8001
+  rabbit-mq:
+    image: rabbitmq:3.10.24-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - application
+    restart: unless-stopped
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "check_port_connectivity" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+
+networks:
+  application:
+    driver: bridge
+
+volumes:
+  redis-data:
+    driver: local
+  redisinsight-data:
+    driver: local
+  rabbitmq-data:
+    driver: local

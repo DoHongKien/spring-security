@@ -1,0 +1,68 @@
+server:
+  port: 9999
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/ecommerce
+    username: root
+    password: 2003
+  data:
+    redis:
+      host: localhost
+      port: 6380
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 5
+          initial-interval: 1000ms
+          multiplier: 2
+          max-interval: 10000ms
+
+alert:
+  telegram:
+    bot-token: 7937989754:AAH6QrNWQWBnYYo1Ar0I-xIqkf4tsjED03Q
+
+#logging:
+#  level:
+#    web: debug
+#    org.springframework.security: debug
+#    io.lettuce: debug
+
+rabbitmq:
+  queue:
+    mission:
+      play-first: queue-mission-play-first
+      top-game: queue-mission-top-game
+      top-score: queue-mission-top-score
+      check-in: queue-mission-check-in
+      online-time: queue-mission-online-time
+    reward:
+      mission-game: queue-reward-mission-game
+      mission-gate: queue-reward-mission-gate
+    game:
+      best-by-day: queue-game-best-by-day
+      best-by-week: queue-game-best-by-week
+      best-by-month: queue-game-best-by-month
+      history-game: queue-game-history
+  exchange:
+    mission: exchange-mission
+    game: exchange-game
+    reward: exchange-reward
+security:
+jwt:
+  expiration: 86400000
+  refreshExpiration: 86400000
+  secretkey: 425cd1c40df6c6ce51e9c8789fd877e14559d5c1ae2f39866774241780f68aa736c7cc8c946983dd249c671e36cbcb73e3ad1915839fc4d9b9ef9ba6c3e95e0f7681aba15de649653bafe2c9b4a36cd6e78f94a20fa6c9ef92dc84cfc6f596b5cfcf2317ecd797f78ef055ddaaeaf02671339a5591de416621f2f42adc099a4b4a11b1d32780f00edf541c3bde561809a0765436eeb5250075030964d7cea36b0279b7efcd96fbad7dc2a9958bd52a5b00c2b5d3bdb12e307f9d6b17af20b1ca3383e00806f7f128cae55dcc073b7e6e58d91aa65a7042999c2e405b93b78b0b0c2ae853df099d4eb5c995acdb02f71338eb0be3f809c52f3660e9ec90e2a7c1
