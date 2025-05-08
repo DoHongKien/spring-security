@@ -33,7 +33,7 @@ spring:
 
 alert:
   telegram:
-    bot-token: 7937989754:AAH6QrNWQWBnYYo1Ar0I-xIqkf4tsjED03Q
+    bot-token: ${TELEGRAM_BOT_TOKEN}
 
 #logging:
 #  level:
