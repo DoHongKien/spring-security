@@ -1,64 +1,128 @@
 version: '3'
+
 services:
-  redis:
+  redis-primary:
     image: redis:7.0
+    container_name: redis-primary
     ports:
       - "6380:6379"
     volumes:
-      - redis-data:/data
+      - redis-primary-data:/data
+    restart: unless-stopped
     networks:
-      - application
-    restart: unless-stopped  # Thêm policy restart
-    command: redis-server --appendonly yes  # Thêm persistence
-    healthcheck: # Thêm healthcheck
-      test: [ "CMD", "redis-cli", "ping" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - application-networks
+
+  redis-replica-1:
+    image: redis:7.0
+    container_name: redis-replica-1
+    ports:
+      - "6381:6379"
+    volumes:
+      - redis-replica-1-data:/data
+    command: redis-server --appendonly yes --slaveof redis-primary 6379
+    depends_on:
+      - redis-primary
+    restart: unless-stopped
+    networks:
+      - application-networks
+
+  redis-replica-2:
+    image: redis:7.0
+    container_name: redis-replica-2
+    ports:
+      - "6382:6379"
+    volumes:
+      - redis-replica-2-data:/data
+    command: redis-server --appendonly yes --slaveof redis-primary 6379
+    depends_on:
+      - redis-primary
+    restart: unless-stopped
+    networks:
+      - application-networks
 
   redis-insight:
     image: redis/redisinsight:latest
+    container_name: redis-insight
     ports:
-      - '5540:5540'
+      - "5540:5540"
     volumes:
-      - redisinsight-data:/db  # Thêm volume cho RedisInsight
-    depends_on:
-      - redis
+      - redis-insight-data:/db
     networks:
-      - application
-    restart: unless-stopped  # Thêm policy restart
-    environment: # Thêm environment variables
+      - application-networks
+    depends_on:
+      - redis-primary
+    restart: unless-stopped
+    environment:
       - REDISINSIGHT_HOST=0.0.0.0
       - REDISINSIGHT_PORT=8001
-  rabbit-mq:
+
+  rabbitmq:
     image: rabbitmq:3.10.24-management-alpine
+    container_name: rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"
-    networks:
-      - application
-    restart: unless-stopped
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=admin
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
+    restart: unless-stopped
+    networks:
+      - application-networks
     healthcheck:
       test: [ "CMD", "rabbitmq-diagnostics", "check_port_connectivity" ]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  mysql:
+    image: mysql:8.2
+    container_name: mysql
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=2003
+      - MYSQL_DATABASE=ecommerce
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+    networks:
+      - application-networks
 
+  spring-boot-app:
+    container_name: spring-boot-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9999:9999"
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - REDIS_HOST=redis-primary
+      - REDIS_PORT=6379
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=admin
+      - RABBITMQ_PASSWORD=admin
+    depends_on:
+      - mysql
+      - redis-primary
+      - rabbitmq
+    restart: unless-stopped
+    networks:
+      - application-networks
 
 networks:
-  application:
+  application-networks:
     driver: bridge
 
 volumes:
-  redis-data:
-    driver: local
-  redisinsight-data:
-    driver: local
+  redis-primary-data:
+  redis-replica-1-data:
+  redis-replica-2-data:
   rabbitmq-data:
-    driver: local
+  redis-insight-data:
+  mysql-data:

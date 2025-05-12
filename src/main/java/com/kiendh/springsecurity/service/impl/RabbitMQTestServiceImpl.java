@@ -22,10 +22,6 @@ public class RabbitMQTestServiceImpl implements RabbitMQTestService {
     @AlertTelegram(content = "Gửi dữ liệu đến RabbitMQ thất bại")
     @Override
     public void sendMessage(String message, String routingKey) {
-        routingKey = null;
-        if(routingKey.equalsIgnoreCase("game")) {
-            throw new RuntimeException();
-        }
         if (!"game".equalsIgnoreCase(routingKey) && !"gate".equalsIgnoreCase(routingKey)) {
             throw new CustomException("Invalid routing key");
         }
