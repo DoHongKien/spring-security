@@ -85,7 +85,7 @@ public class TelegramAlertServiceImpl implements TelegramAlertService {
     }
 
     @Override
-    @Scheduled(fixedDelay = 60, timeUnit = TimeUnit.SECONDS)
+//    @Scheduled(fixedDelay = 60, timeUnit = TimeUnit.SECONDS)
     public void reloadReceivers() {
         String lastOffset = redisTemplate.opsForValue().get(KEY_LAST_OFFSET);
         String chatIdString = redisTemplate.opsForValue().get(KEY_CHAT);

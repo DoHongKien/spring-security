@@ -1,5 +1,6 @@
 package com.kiendh.springsecurity.controller;
 
+import com.kiendh.springsecurity.exception.CustomException;
 import com.kiendh.springsecurity.service.CheckBitMapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,7 @@ public class CheckController {
         boolean emailExists = checkService.isEmailExists(email);
 
         if (emailExists) {
-            return "Email already exists";
+            throw new CustomException("Email already exists");
         } else {
             checkService.addEmail(email);
             return "Email added successfully";

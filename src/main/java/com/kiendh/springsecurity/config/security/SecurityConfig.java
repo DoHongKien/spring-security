@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity(jsr250Enabled = true) // dùng để cho phép @RoleAllowed hoạt động
 public class SecurityConfig {
 
-    private static final String[] whiteList = new String[]{"/actuator/**", "/auth/**", "hello", "hi", "/check/**"};
+    private static final String[] whiteList = new String[]{"/actuator/**", "/auth/**", "/hello", "/hi"};
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
