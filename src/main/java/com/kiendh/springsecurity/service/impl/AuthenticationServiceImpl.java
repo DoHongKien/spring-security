@@ -4,14 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kiendh.springsecurity.config.jwt.JwtService;
 import com.kiendh.springsecurity.config.security.CustomUserDetail;
-import com.kiendh.springsecurity.dto.enums.AlertType;
 import com.kiendh.springsecurity.dto.request.*;
-import com.kiendh.springsecurity.dto.response.AlertDto;
 import com.kiendh.springsecurity.dto.response.LoginResponse;
 import com.kiendh.springsecurity.dto.response.UserResponse;
 import com.kiendh.springsecurity.entity.User;
 import com.kiendh.springsecurity.exception.CustomException;
-import com.kiendh.springsecurity.infrastructure.aop.AlertTelegram;
 import com.kiendh.springsecurity.repository.UserRepository;
 import com.kiendh.springsecurity.service.AuthenticationService;
 import com.kiendh.springsecurity.service.CheckBitMapService;
@@ -20,13 +17,10 @@ import com.kiendh.springsecurity.service.TelegramAlertService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.UUID;
 
 @Slf4j
 @Service
