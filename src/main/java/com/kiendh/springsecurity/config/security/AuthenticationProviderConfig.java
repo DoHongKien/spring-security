@@ -37,7 +37,7 @@ public class AuthenticationProviderConfig {
     @Bean
     public AuditorAware<String> auditorAware() {
         return () -> Optional.ofNullable(
-                        SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                 .map(object -> ((CustomUserDetail) object).getUsername());
     }
 }

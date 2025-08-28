@@ -27,12 +27,14 @@ public class Customer {
     private String fullName;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "gender", columnDefinition = "varchar(20)")
     private Gender gender;
 
     @Column(name = "date_of_birth")
     private LocalDate dob;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", columnDefinition = "varchar(20)")
     private Status status;
 
     private String email;

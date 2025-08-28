@@ -25,6 +25,7 @@ public class RefreshToken {
     private String deviceId;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "is_revoked", columnDefinition = "varchar(20)")
     private RevokedStatus isRevoked;
 
     private LocalDateTime createdAt;

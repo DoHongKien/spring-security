@@ -2,6 +2,7 @@ package com.kiendh.springsecurity.controller;
 
 import com.kiendh.springsecurity.dto.enums.ScheduleType;
 import com.kiendh.springsecurity.dto.request.TaskDefinition;
+import com.kiendh.springsecurity.dto.response.TaskStatus;
 import com.kiendh.springsecurity.service.schedule.TaskSchedulingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,13 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.support.CronExpression;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/schedule")
 @RequiredArgsConstructor
 public class JobSchedulingController {
 
     private final TaskSchedulingService taskSchedulingService;
-
 
     @PostMapping("/taskdef")
     public ResponseEntity<String> scheduleATask(@RequestBody @Valid TaskDefinition taskDefinition) {
@@ -41,5 +43,11 @@ public class JobSchedulingController {
     public ResponseEntity<String> removeJob(@PathVariable ScheduleType scheduleType) {
         taskSchedulingService.removeScheduledTask(scheduleType);
         return ResponseEntity.ok("Task with scheduleType " + scheduleType + " removed successfully");
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Map<ScheduleType, TaskStatus>> getTasksStatus() {
+        Map<ScheduleType, TaskStatus> status = taskSchedulingService.getActiveTasksStatus();
+        return ResponseEntity.ok(status);
     }
 }

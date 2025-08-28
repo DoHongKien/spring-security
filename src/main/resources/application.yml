@@ -17,19 +17,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USERNAME:admin}
-    password: ${RABBITMQ_PASSWORD:admin}
-    listener:
-      simple:
-        retry:
-          enabled: true
-          max-attempts: 5
-          initial-interval: 1000ms
-          multiplier: 2
-          max-interval: 10000ms
+
+app:
+  scheduling:
+    pool-size: 10
+    enable: true
+    timezone: Asia/Ho_Chi_Minh
 
 alert:
   telegram:
@@ -41,26 +34,6 @@ alert:
 #    org.springframework.security: debug
 #    io.lettuce: debug
 
-rabbitmq:
-  queue:
-    mission:
-      play-first: queue-mission-play-first
-      top-game: queue-mission-top-game
-      top-score: queue-mission-top-score
-      check-in: queue-mission-check-in
-      online-time: queue-mission-online-time
-    reward:
-      mission-game: queue-reward-mission-game
-      mission-gate: queue-reward-mission-gate
-    game:
-      best-by-day: queue-game-best-by-day
-      best-by-week: queue-game-best-by-week
-      best-by-month: queue-game-best-by-month
-      history-game: queue-game-history
-  exchange:
-    mission: exchange-mission
-    game: exchange-game
-    reward: exchange-reward
 security:
 jwt:
   expiration: 86400000
